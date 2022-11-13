@@ -42,7 +42,7 @@ def main_loop():
                 elif event.type == LOSE_OF_GAME:
                     print("shit")
                     now_mode = 3
-                    lose_init()
+                    lose_init(snake_g.score)
                     break
                 elif event.type == WIN_OF_GAME:
                     print("sex")
@@ -101,6 +101,7 @@ def game_init():
 
 
 def game_run():
+    fps_g = int((1 + snake_g.score / 30) * START_FPS)
     clock_g.tick(fps_g)
     snake_g.Move()
     screen_g.fill("black")
@@ -108,18 +109,20 @@ def game_run():
     snake_g.Draw(screen_g)
 
 
-def lose_init():
+def lose_init(end_score):
     global screen_l, fps_l, retry_but_l, clock_l, background_l
 
     screen_l = pygame.display.set_mode((WIDHT, HEIGHT))
     fps_l = 60
     retry_but_l = Button(200, 170, 200, 70, "data/images/retry_button.png")
     clock_l = pygame.time.Clock()
-    background_l = pygame.image.load("data/images/menu_background.png")
+    background_l = pygame.image.load("data/images/youdied_background.png")
 
 
 def lose_run():
     clock_l.tick(fps_sm)
     screen_l.blit(background_l, (0, 0))
     if retry_but_l.Draw(screen_sm):
-        print(1)
+        global now_mode
+        now_mode = 1
+        start_menu_init()
