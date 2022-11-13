@@ -1,4 +1,5 @@
 from .sector import *
+from data.events import *
 
 
 class Snake(Sector):
@@ -47,8 +48,8 @@ class Snake(Sector):
                 lis[i.rect.x // CELLS_SIZE][i.rect.y // CELLS_SIZE] = 1
             lis[self.rect.x // CELLS_SIZE][self.rect.y // CELLS_SIZE] = 1
             self.apple.Replace(lis)
-        if self.CheckCollutions():
-            print("SHIT")
+        if self.CheckCollutions() and self.score != 1:
+            pygame.event.post(pygame.event.Event(LOSE_OF_GAME))
         if len(self.tail_queue) == 0:
             pass
         elif len(self.tail_queue) == 1:

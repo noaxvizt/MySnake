@@ -13,7 +13,6 @@ class Sector:
         self.x_size = x_size
         self.y_size = y_size
         self.sector = pygame.transform.scale(pygame.image.load(self.image_path), (self.x_size, self.y_size))
-        #self.sector.fill(color)
         self.rect = self.sector.get_rect(topleft=(self.x_position, self.y_position))
         self.freeze = False
         self.x_velocity = 0

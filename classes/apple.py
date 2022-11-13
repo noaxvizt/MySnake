@@ -1,4 +1,5 @@
 from .sector import *
+from data.events import *
 
 
 class Apple(Sector):
@@ -11,6 +12,9 @@ class Apple(Sector):
             for j in range(HEIGHT // CELLS_SIZE):
                 if not lis[i][j]:
                     may_be_lis.append((i, j))
+        if len(may_be_lis) == 0:
+            pygame.event.post(pygame.event.Event(WIN_OF_GAME))
+            return
         cell = random.randint(0, len(may_be_lis) - 1)
         self.rect.x = may_be_lis[cell][0] * CELLS_SIZE
         self.rect.y = may_be_lis[cell][1] * CELLS_SIZE
