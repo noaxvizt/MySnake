@@ -40,12 +40,12 @@ def main_loop():
                     if event.key == pygame.K_UP:
                         snake_g.SetYVelocity(-1)
                 elif event.type == LOSE_OF_GAME:
-                    print("shit")
+                    pass
                     now_mode = 3
                     lose_init(snake_g.score)
                     break
                 elif event.type == WIN_OF_GAME:
-                    print("sex")
+                    pass
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     flRunning = False
