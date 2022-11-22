@@ -3,13 +3,14 @@ from data.events import *
 
 
 class Snake(Sector):
-    def __init__(self, color, apple):
-        super().__init__(color, 0, 0, CELLS_SIZE, CELLS_SIZE, "data/images/snakeshead.png")
+    def __init__(self, color, apple, barrier_lis):
+        super().__init__(color, CELLS_SIZE, CELLS_SIZE, CELLS_SIZE, CELLS_SIZE, "data/images/snakeshead.png")
         self.head = self.sector
         self.score = 0
         self.tail_queue = deque()
         self.apple = apple
         self.ungle = 0
+        self.barrier_lis = barrier_lis
 
     def SetXVelocity(self, x_velocity):
         super().SetXVelocity(x_velocity)
@@ -36,7 +37,11 @@ class Snake(Sector):
         if len(self.tail_queue) != 0:
             for i in self.tail_queue:
                 if i.rect.x == self.rect.x and i.rect.y == self.rect.y:
-                    return True
+                    return 1
+        if len(self.barrier_lis) != 0:
+            for i in self.barrier_lis:
+                if i.rect.x == self.rect.x and i.rect.y == self.rect.y:
+                    return 2
         return False
 
     def Move(self):
@@ -46,9 +51,11 @@ class Snake(Sector):
             lis = [[0 for __ in range(HEIGHT // CELLS_SIZE)] for _ in range(WIDHT // CELLS_SIZE)]
             for i in self.tail_queue:
                 lis[i.rect.x // CELLS_SIZE][i.rect.y // CELLS_SIZE] = 1
+            for i in self.barrier_lis:
+                lis[i.rect.x // CELLS_SIZE][i.rect.y // CELLS_SIZE] = 1
             lis[self.rect.x // CELLS_SIZE][self.rect.y // CELLS_SIZE] = 1
             self.apple.Replace(lis)
-        if self.CheckCollutions() and self.score != 1:
+        if self.CheckCollutions() == 1 and self.score != 1 or self.CheckCollutions() == 2:
             pygame.event.post(pygame.event.Event(LOSE_OF_GAME))
         if len(self.tail_queue) == 0:
             pass
@@ -81,5 +88,7 @@ class Snake(Sector):
 
     def Draw(self, screen):
         for i in self.tail_queue:
+            i.Draw(screen)
+        for i in self.barrier_lis:
             i.Draw(screen)
         super().Draw(screen)

@@ -22,7 +22,7 @@ class Button:
                 self.clicked = True
                 do_action = True
                 self.clicked = False
-                pygame.time.wait(100)
+                pygame.time.wait(300)
         if not pygame.mouse.get_pressed()[0]:
             self.clicked = False
         screen.blit(self.sector, self.rect)

@@ -6,12 +6,14 @@ from data.constants import *
 from classes.button import Button
 from data.events import *
 from classes.scoring import ScoreCenter
+from classes.barrier import *
 
 
 def main_loop():
-    global now_mode, my_font, scoreHelper, my_font1
+    global now_mode, my_font, scoreHelper, my_font1, my_font2, now_level
     scoreHelper = ScoreCenter()
     now_mode = 1
+    now_level = 2
     flRunning = True
     # 1 - start window
     # 2 - game window
@@ -21,6 +23,7 @@ def main_loop():
     pygame.font.init()
     my_font = pygame.font.SysFont('Comic Sans MS', 36)
     my_font1 = pygame.font.SysFont('Comic Sans MS', 20)
+    my_font2 = pygame.font.SysFont(None, 150)
     start_menu_init()
 
     while flRunning:
@@ -80,20 +83,23 @@ def main_loop():
 
 
 def start_menu_init():
-    global screen_sm, fps_sm, start_game_but_sm,clock_sm, background_sm, high_scores_but_sm
-
+    global screen_sm, fps_sm, start_game_but_sm,clock_sm, background_sm, high_scores_but_sm, change_level_but_sm
     screen_sm = pygame.display.set_mode((WIDHT, HEIGHT))
     fps_sm = 60
     start_game_but_sm = Button(200, 170, 200, 70, "data/images/play_button.png")
-    high_scores_but_sm = Button(200, 250, 200, 70, "data/images/high_score_button.png")
+    change_level_but_sm = Button(100, 270, 70, 70, "data/images/pointer_right.png")
+    high_scores_but_sm = Button(200, 270, 200, 70, "data/images/high_score_button.png")
     clock_sm = pygame.time.Clock()
     background_sm = pygame.image.load("data/images/menu_background.png")
 
 
 def start_menu_run():
-    global now_mode
+    global now_mode, now_level
+
     clock_sm.tick(fps_sm)
+    text_surface = my_font2.render(str(now_level + 1), True, (200, 255, 100))
     screen_sm.blit(background_sm, (0, 0))
+    screen_sm.blit(text_surface, (100, 160))
     if start_game_but_sm.Draw(screen_sm):
         now_mode = 2
         game_init()
@@ -102,27 +108,33 @@ def start_menu_run():
         now_mode = 4
         high_score_init()
         return
+    if change_level_but_sm.Draw(screen_sm):
+        now_level += 1
+        now_level %= len(BARRIERS)
 
 
 def game_init():
-    global screen_g, fps_g, clock_g, apple_g, snake_g
+    global screen_g, fps_g, clock_g, apple_g, snake_g, barriers_lis, background_g
     screen_g = pygame.display.set_mode((WIDHT, HEIGHT))
     pygame.display.set_caption("ЗМЕЙКА")
     pygame.display.set_icon(pygame.image.load("data/images/icon.png"))
+    background_g = pygame.image.load("data/images/main_background.png")
 
     fps_g = START_FPS
     WHITE = (255, 255, 255)
     GREEN = (0, 255, 0)
+    barriers_lis = [Barrier(WHITE, i[0] * CELLS_SIZE, i[1] * CELLS_SIZE) for i in BARRIERS[now_level]]
     clock_g = pygame.time.Clock()
     apple_g = Apple(GREEN)
-    snake_g = Snake(WHITE, apple_g)
+    snake_g = Snake(WHITE, apple_g, barriers_lis)
 
 
 def game_run():
     fps_g = int((1 + snake_g.score / 30) * START_FPS)
+    apple_g.barriers_lis = barriers_lis
     clock_g.tick(fps_g)
     snake_g.Move()
-    screen_g.fill("black")
+    screen_g.blit(background_g, (0, 0))
     apple_g.Draw(screen_g)
     snake_g.Draw(screen_g)
 
