@@ -2,6 +2,7 @@
 git clone https://github.com/noaxvizt/MySnake.git <br>
 cd MySnake <br>
 git checkout dev <br>
+python3 -m pip install --user --upgrade pip
 pip install -r requirements.txt <br>
 python3 main.py <br>
 
